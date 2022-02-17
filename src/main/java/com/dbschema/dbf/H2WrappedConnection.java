@@ -49,26 +49,30 @@ public class H2WrappedConnection implements Connection {
         final File[] files = folder.listFiles();
         if ( files != null ) {
             for (File file : files) {
-                if ( file.isFile() ){
-                    if ( file.getName().toLowerCase().endsWith(".dbf") ) {
-                        try ( DBFReader reader = new DBFReader( new FileInputStream(file))) {
-                            final Table table = new Table(rootFolder, file);
-                            if ( !DBFtoH2.isFileTransferred( file, h2Connection )){
-                                DBFtoH2.transfer( table, reader, h2Connection );
-                                DBFtoH2.saveFileTransferredInfo( file, h2Connection );
-                            }
-                            if (defaultCharset == null && reader.getCharset() != null ) {
-                                defaultCharset = reader.getCharset().name();
-                            }
-                        } catch (Exception ex) {
-                            LOGGER.log(Level.SEVERE, "Error transferring " + file, ex);
-                            throw new SQLException(ex.getLocalizedMessage(), ex);
-                        }
+                transferFile(rootFolder, file);
+            }
+        }
+    }
+
+    void transferFile(File rootFolder, File file) throws SQLException {
+        if ( file.isFile() ){
+            if ( file.getName().toLowerCase().endsWith(".dbf") ) {
+                try ( DBFReader reader = new DBFReader( new FileInputStream(file))) {
+                    final Table table = new Table(rootFolder, file);
+                    if ( !DBFtoH2.isFileTransferred(file, h2Connection )){
+                        DBFtoH2.transfer( table, reader, h2Connection );
+                        DBFtoH2.saveFileTransferredInfo(file, h2Connection );
                     }
-                } else if ( file.isDirectory() ){
-                    transferFolder( file, rootFolder );
+                    if (defaultCharset == null && reader.getCharset() != null ) {
+                        defaultCharset = reader.getCharset().name();
+                    }
+                } catch (Exception ex) {
+                    LOGGER.log(Level.SEVERE, "Error transferring " + file, ex);
+                    throw new SQLException(ex.getLocalizedMessage(), ex);
                 }
             }
+        } else if ( file.isDirectory() ){
+            transferFolder(file, rootFolder);
         }
     }
 

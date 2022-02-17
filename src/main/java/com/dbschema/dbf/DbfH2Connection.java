@@ -20,6 +20,11 @@ public class DbfH2Connection implements Connection{
        wrappedConnection.transferFolder(dbfFolder, dbfFolder);
     }
 
+    public void refreshTable(String name) throws SQLException {
+        File tableFile = new File(dbfFolder, name);
+        wrappedConnection.transferFile(dbfFolder, tableFile);
+    }
+
     /* ***** Delegate Methods ***** */
     public Statement createStatement() throws SQLException {
         return wrappedConnection.createStatement();
