@@ -95,11 +95,12 @@ public class JdbcDriver implements Driver {
 
         final JdbcConnection h2Connection = (JdbcConnection) (new org.h2.Driver().connect( h2JdbcUrl, new Properties() ));
         final H2WrappedConnection wrappedConnection = new H2WrappedConnection( h2Connection, defaultCharset);
+        final DbfH2Connection conn = new DbfH2Connection(folder, wrappedConnection);
         if ( !h2Databases.contains( h2DbName )){
-            wrappedConnection.transferFolder(folder, folder);
+            conn.refreshDatabase();
             h2Databases.add(h2DbName);
         }
-        return wrappedConnection;
+        return conn;
     }
 
 
