@@ -21,7 +21,7 @@ public class DbfH2Connection implements Connection{
     }
 
     public void refreshTable(String name) throws SQLException {
-        File tableFile = new File(dbfFolder, name);
+        File tableFile = new File(dbfFolder, name + ".DBF");
         wrappedConnection.transferFile(dbfFolder, tableFile);
     }
 
