@@ -45,7 +45,7 @@ public class H2WrappedConnection implements Connection {
         this.defaultCharset = defaultCharset;
     }
 
-    void transferFolder(File folder, File rootFolder, Connection h2Connection) throws SQLException {
+    void transferFolder(File folder, File rootFolder) throws SQLException {
         final File[] files = folder.listFiles();
         if ( files != null ) {
             for (File file : files) {
@@ -66,7 +66,7 @@ public class H2WrappedConnection implements Connection {
                         }
                     }
                 } else if ( file.isDirectory() ){
-                    transferFolder( file, rootFolder, h2Connection );
+                    transferFolder( file, rootFolder );
                 }
             }
         }
